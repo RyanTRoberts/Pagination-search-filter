@@ -78,11 +78,9 @@ function searchStudents(){
     if(input == names[i].innerText){;
       //display any matching names
       $(studentList[i]).show();
-    } else if(input !== names[i].innerText) {
+    } else {
       //hide other names
       $(studentList[i]).hide();
-    } else {
-      $(studentList[i]).show();
     }
   }
 }
