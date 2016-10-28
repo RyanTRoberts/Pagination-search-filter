@@ -1,7 +1,16 @@
-// Get relevant references
-const $page = document.querySelector('.page')
-const $pageHeader = $page.querySelector('.page-header')
-const $studentsList = document.getElementById('student-list')
+var studentNo = document.getElementsByTagName('li').length;//get length of student list
+var pagesNeeded = Math.ceil(studentNo / 10);//calculate pages needed with 10 students per page
+var pageNum = 1;//set current page on pageload
+const $page = document.querySelector('.page');
+const $pageHeader = $page.querySelector('.page-header')//select the main div in which to add content
+var pages = 0;//current amount of pages
+var matches = 0;//ho
+// This is just so that we can treat HTMLCollections like really-real Arrays
+HTMLCollection.prototype.forEach = Array.prototype.forEach
+//Store student-items into an array
+const $studentsList = document.getElementById('student-list').children;
+const $links = document.getElementsByClassName('pageNumbers');
+
 
 // Helper functions
 function show(el) {
@@ -12,10 +21,60 @@ function hide(el) {
     el.style.display = 'none'
 }
 
-// Displays all student list-items between minInclusiveInt and maxInclusiveInt
-// Hides all the rest
+
+
+function addContent(){
+  //insert search bar into page header
+  $pageHeader.insertAdjacentHTML('beforeend', '<div class="student-search"><input id="searchInput" placeholder="Search for students..."><button id="searchButton">Search</button></div>');
+
+  pagination()
+}
+  //call addContent
+addContent()
+
+function pagination(){
+  //insert opening div and ul tags
+  $page.insertAdjacentHTML('beforeend', '<div class="pagination"><ul class="pageNum">');
+
+  //add pages
+  while(pages < pagesNeeded){
+    //update amount of current pages
+    pages += 1;
+    //populate the ul with pages numbers needed
+    document.querySelector('.pageNum').insertAdjacentHTML('beforeend', '<li><a  class="pageNumbers" href="#">' + pages + '</a></li>');
+    }
+    //close the ul and div tags
+    document.querySelector('.pagination').insertAdjacentHTML('beforeend', "</ul></div>");
+
+}
+
+//hide all students after the first 10
+$($studentsList).hide();
+
+for (var p = 0; p < 10; p++){
+  $($studentsList[p]).show();
+}
+
+
+//when a link is clicked, store link value and then run the onclick function
+$($links).on('click', function() {
+
+    var p = this.innerText;//get the value of link clicked
+    pageNum = p;// set pageNum to value of link clicked
+
+    //run function to change page
+    filterStudentsHTML((pageNum * 10) - 10, pageNum * 10)
+})
+
+
+  //add search function allowing user to search student list
+//store student names and student emails in an array
+var names = document.getElementsByClassName('searchField');
+var emails = $('email');
+
+//show only ten students per page
 function filterStudentsHTML(minInclusiveInt, maxInclusiveInt) {
-    const $studentsListItems = $studentsList.children
+    const $studentsListItems = document.getElementById('student-list').children;
 
     minInclusiveInt = minInclusiveInt || 0
     maxInclusiveInt = maxInclusiveInt || $studentsListItems.length
@@ -32,87 +91,29 @@ function filterStudentsHTML(minInclusiveInt, maxInclusiveInt) {
     }
 }
 
-function onPaginationItemClick(event) {
-    event.preventDefault()
-
-    const pageNumber = parseInt(event.target.textContent)
-    filterStudentsHTML((pageNumber * 10) - 10, pageNumber * 10)
-}
-
+//when user clicks the search button
 function onSearchSubmit(event) {
     const $input = document.getElementById('searchInput')
-    const query = $input.value
-
+    const query = $input.value.toLowerCase()
+    matches = 0
     $input.value = ''
+
 
     if (query === '') {
         return false
     }
-
-    $studentsList.children.forEach(function ($li) {
+//compage user Search against names and emails of students
+    $studentsList.forEach(function ($li) {
         const name = $li.querySelector('h3').textContent
 
         if (name.includes(query)) {
             show($li)
+            matches += 1;
         } else {
             hide($li)
         }
     })
 }
 
-// This is just so that we can treat HTMLCollections like really-real Arrays
-HTMLCollection.prototype.forEach = Array.prototype.forEach
-
-function buildSearchHTML() {
-    const $container = document.createElement('div')
-    const $input = document.createElement('input')
-    const $btn = document.createElement('button')
-
-    $container.className = 'student-search'
-    $input.id = 'searchInput'
-    $input.setAttribute('placeholder', 'Search for students...')
-    $btn.id = 'searchButton'
-    $btn.textContent = 'Search'
-
-    $btn.addEventListener('click', onSearchSubmit, false)
-
-    $container.appendChild($input)
-    $container.appendChild($btn)
-
-    return $container
-}
-
-function buildPaginationHTML(pageCount) {
-    const $container = document.createElement('div')
-    const $ul = document.createElement('ul')
-
-    for (var i = 0; i < pageCount; i++) {
-        const $li = document.createElement('li')
-        const $a = document.createElement('a')
-
-        $a.className = 'pageNumbers'
-        $a.href = '#'
-        $a.textContent = i + 1
-
-        $li.appendChild($a)
-        $ul.appendChild($li)
-
-        $li.addEventListener('click', onPaginationItemClick, false)
-    }
-
-    $container.className = 'pagination'
-
-    $container.appendChild($ul)
-    return $container
-}
-
-// Add the search-bar HTML
-$pageHeader.appendChild(buildSearchHTML());
-
-// Add the pagination HTML
-$page.appendChild(buildPaginationHTML(5));
-
-// Hide all student list-items except the first 10
-for (var i = 10; i < $studentsList.children.length; i++) {
-    hide($studentsList.children.item(i))
-}
+  //add click event to searchbutton
+$( "#searchButton" ).on( "click", onSearchSubmit);
