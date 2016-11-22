@@ -76,23 +76,6 @@ function filterStudentsHTML(minInclusiveInt, maxInclusiveInt) {
     }
 }
 
-function filterStudentsAfterSearch(minInclusiveInt, maxInclusiveInt) {
-
-
-    minInclusiveInt = minInclusiveInt || 0;       //point to start hiding students
-    maxInclusiveInt = maxInclusiveInt || $studentsListItems.length;       //point to stop hiding students
-
-    for (var i = 0; i < $studentsListItems.length; i++) {       //will run for each student
-        if (i < minInclusiveInt) {
-            $($studentsList[i]).fadeOut()       //hide all students before minInclusiveInt
-        } else if (i >= maxInclusiveInt) {
-            $($studentsList[i]).fadeOut()       //hide all students after maxInclusiveInt
-        } else {
-            $($studentsList[i]).fadeIn()        //show ten students depending on page number
-        }
-    }
-}
-
 //when user clicks the search button
 function onSearchSubmit(event) {
     results = [];       //clear any previous search results
