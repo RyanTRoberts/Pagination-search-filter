@@ -125,7 +125,7 @@ function updatePagination() {       //function to update the pagination after a 
   var resultNo = results.length;
   pages = 1;
 
-  while (pages <= resultNo / 10){
+  while (pages <= Math.ceil(resultNo/10)){
 
     $(".pageNum").append('<li><a  class="pageNumbers" href="#">' + pages + '</a></li>');        //populate the ul with pages numbers needed
     pages += 1;    //update amount of current pages
@@ -165,6 +165,26 @@ function searchPagination() {
         }
       } else if (p == 6){
           for (var i = 50; i <= 60; i++){
+            $($studentsList[results[i]]).fadeIn();
+        }
+      } else if (p == 7){
+          for (var i = 60; i <= 70; i++){
+            $($studentsList[results[i]]).fadeIn();
+        }
+      } else if (p == 8){
+          for (var i = 60; i <= 70; i++){
+            $($studentsList[results[i]]).fadeIn();
+        }
+      }else if (p == 9){
+          for (var i = 70; i <= 80; i++){
+            $($studentsList[results[i]]).fadeIn();
+        }
+      } else if (p == 10){
+          for (var i = 80; i <= 90; i++){
+            $($studentsList[results[i]]).fadeIn();
+        }
+      } else if (p == 11){
+          for (var i = 90; i <= 100; i++){
             $($studentsList[results[i]]).fadeIn();
         }
       }
